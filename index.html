@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="es">
-  <input type="file" id="memImage" accept="image/*" />
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -443,6 +442,10 @@
           Mensaje
           <textarea id="memText" placeholder="Escribe el recuerdo... (o algo que le quieras decir)"></textarea>
         </label>
+        <label>
+  Imagen (opcional)
+  <input type="file" id="memImage" accept="image/*" />
+</label>
       </div>
       <div class="actions">
         <button id="cancelAdd">Cancelar</button>
@@ -754,13 +757,7 @@ const row = {
   ny: pos.ny,
   image_path
 };
-    const row = {
-      mem_date: memDate.value || null,
-      title,
-      content,
-      nx: pos.nx,
-      ny: pos.ny
-    };
+
 
     const { data, error } = await sb
       .from("memories")
@@ -872,6 +869,7 @@ const row = {
 </body>
 
 </html>
+
 
 
 
