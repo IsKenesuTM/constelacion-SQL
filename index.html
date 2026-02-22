@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="es">
+  <input type="file" id="memImage" accept="image/*" />
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -460,6 +461,7 @@
       <div class="read-card">
         <div class="read-date" id="readDate"></div>
         <h3 class="read-title" id="readHeading"></h3>
+         <div id="readImageWrap" style="margin:12px 0;"></div>
         <p class="read-text" id="readText"></p>
       </div>
       <div class="actions">
@@ -608,6 +610,30 @@
 
     readDate.textContent = formatDate(mem.mem_date);
     readHeading.textContent = mem.title || "Sin título (pero con sentimiento)";
+    const imgWrap = document.getElementById("readImageWrap");
+imgWrap.innerHTML = "";
+
+if (mem.image_path) {
+  const { data } = sb
+    .storage
+    .from("memories-images")
+    .getPublicUrl(mem.image_path);
+
+  const url = data.publicUrl;
+
+  imgWrap.innerHTML = `
+    <img 
+      src="${url}" 
+      alt="Recuerdo"
+      style="
+        width:100%;
+        border-radius:14px;
+        border:1px solid rgba(255,255,255,.18);
+        box-shadow:0 8px 25px rgba(0,0,0,.35);
+      "
+    />
+  `;
+}
     readText.textContent = mem.content || "";
 
     openOverlay(readOverlay);
@@ -694,7 +720,40 @@
     }
 
     const pos = randomPosition();
+const memImage = document.getElementById("memImage");
+const file = memImage.files?.[0] || null;
 
+let image_path = null;
+
+if (file) {
+  // nombre único
+  const ext = file.name.split(".").pop();
+  const fileName = `${crypto.randomUUID()}.${ext}`;
+  const path = `uploads/${fileName}`;
+
+  const { error: upErr } = await sb
+    .storage
+    .from("memories-images")
+    .upload(path, file, { contentType: file.type });
+
+  if (upErr) {
+    console.error(upErr);
+    showToast("No se pudo subir la imagen 😿");
+    return;
+  }
+
+  image_path = path;
+}
+
+// luego tu row incluye image_path
+const row = {
+  mem_date: memDate.value || null,
+  title,
+  content,
+  nx: pos.nx,
+  ny: pos.ny,
+  image_path
+};
     const row = {
       mem_date: memDate.value || null,
       title,
@@ -813,6 +872,7 @@
 </body>
 
 </html>
+
 
 
 
