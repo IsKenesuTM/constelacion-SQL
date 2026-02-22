@@ -619,7 +619,7 @@ imgWrap.innerHTML = "";
 if (mem.image_path) {
   const { data } = sb
     .storage
-    .from("memories-images")
+    .from("memories")
     .getPublicUrl(mem.image_path);
 
   const url = data.publicUrl;
@@ -736,7 +736,7 @@ if (file) {
 
   const { error: upErr } = await sb
     .storage
-    .from("memories-images")
+    .from("memories")
     .upload(path, file, { contentType: file.type });
 
   if (upErr) {
@@ -869,6 +869,7 @@ const row = {
 </body>
 
 </html>
+
 
 
 
